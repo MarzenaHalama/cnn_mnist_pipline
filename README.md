@@ -5,6 +5,7 @@ This project is modular CNN pipeline for handwritten digit classification on MNI
 ---
 
 <img width="701" height="372" alt="image" src="https://github.com/user-attachments/assets/1eb0762b-9e5d-415d-ae51-398eabfb9ef8" />
+<img width="843" height="829" alt="image" src="https://github.com/user-attachments/assets/db328b6d-f152-43f7-829e-ff0c9254fa8f" />
 
 
 ## Project Overview
