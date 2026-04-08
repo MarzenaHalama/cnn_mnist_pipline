@@ -4,6 +4,9 @@ This project is a production-style, modular CNN pipeline for handwritten digit c
 
 ---
 
+<img width="701" height="372" alt="image" src="https://github.com/user-attachments/assets/1eb0762b-9e5d-415d-ae51-398eabfb9ef8" />
+
+
 ## Project Overview
 
 | Item | Detail |
