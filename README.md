@@ -39,7 +39,8 @@ This project is modular CNN pipeline for handwritten digit classification on MNI
     ├── classification_report.png
     ├── conv_filters.png
     ├── feature_maps.png
-    └── gradcam.png
+    ├── gradcam.png
+    └── tsne_embeddings.png
 ```
 
 ---
@@ -108,6 +109,7 @@ python main.py --subset 5000 --epochs 10
 | `conv_filters.png` | Learned kernels of the first Conv2D layer |
 | `feature_maps.png` | Intermediate activations from conv1 and conv2 |
 | `gradcam.png` | Grad-CAM heatmap overlays on sample images |
+| `tsne_embeddings.png` | 2-D t-SNE projection of learned feature embeddings (dense1) |
 
 ---
 

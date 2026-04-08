@@ -365,6 +365,64 @@ def plot_gradcam(
     return fig
 
 
+def plot_tsne_embeddings(
+    model: Model,
+    images: NDArray[np.float32],
+    labels: NDArray[np.int64],
+    layer_name: str = "dense1",
+    num_samples: int = 3000,
+    perplexity: float = 30.0,
+    save_path: str | None = None,
+) -> Figure:
+    """2-D t-SNE projection of the learned feature embeddings.
+
+    Parameters:
+    model,
+    images,
+    labels,
+    layer_name : str - layer whose output to use as embedding.
+    num_samples : int - number of images to include (t-SNE is O(n^2)).
+    perplexity : float - t-SNE perplexity.
+    save_path.
+
+    Returns:
+    Figure
+    """
+    from sklearn.manifold import TSNE
+
+    idx = np.random.choice(len(images), min(num_samples, len(images)), replace=False)
+    sample_imgs = images[idx]
+    sample_labels = labels[idx]
+
+    embedding_model = Model(
+        inputs=model.inputs,
+        outputs=model.get_layer(layer_name).output,
+    )
+    embeddings = embedding_model.predict(sample_imgs, verbose=0)
+
+    tsne = TSNE(n_components=2, perplexity=perplexity, random_state=42, init="pca")
+    coords = tsne.fit_transform(embeddings)
+
+    fig, ax = plt.subplots(figsize=(10, 8))
+    scatter = ax.scatter(
+        coords[:, 0],
+        coords[:, 1],
+        c=sample_labels,
+        cmap="tab10",
+        s=8,
+        alpha=0.7,
+    )
+    cbar = fig.colorbar(scatter, ax=ax, ticks=range(10))
+    cbar.set_label("Digit class", fontsize=12)
+    ax.set_title(f"t-SNE of '{layer_name}' embeddings ({len(sample_labels)} samples)", fontsize=14)
+    ax.set_xlabel("t-SNE 1")
+    ax.set_ylabel("t-SNE 2")
+    ax.grid(True, alpha=0.3)
+    fig.tight_layout()
+    _maybe_save(fig, save_path)
+    return fig
+
+
 def _maybe_save(fig: Figure, path: str | None) -> None:
     """Save *fig* to *path* if it is not ``None``."""
     if path is not None:

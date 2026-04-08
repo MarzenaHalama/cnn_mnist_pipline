@@ -27,6 +27,7 @@ from src.visualize import (
     plot_gradcam,
     plot_sample_predictions,
     plot_training_history,
+    plot_tsne_embeddings,
 )
 
 
@@ -97,6 +98,7 @@ def main() -> None:
     plot_conv_filters(model, layer_name="conv1", save_path=str(out / "conv_filters.png"))
     plot_feature_maps(model, x_test[0], save_path=str(out / "feature_maps.png"))
     plot_gradcam(model, x_test, y_test, save_path=str(out / "gradcam.png"))
+    plot_tsne_embeddings(model, x_test, y_test, save_path=str(out / "tsne_embeddings.png"))
 
     print(f"\nAll outputs saved to {out.resolve()}")
 
