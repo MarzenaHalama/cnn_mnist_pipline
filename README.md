@@ -1,10 +1,14 @@
 # mnist-cnn-from-scratch
 
+<img width="753" height="183" alt="image" src="https://github.com/user-attachments/assets/1a27cada-fb02-473c-8cb1-66c376ffc077" />
+
+
 This project is modular CNN pipeline for handwritten digit classification on MNIST, built from scratch. It covers every step from data loading and model definition to training, evaluation, and model persistence.
 
 ---
 
 <img width="701" height="372" alt="image" src="https://github.com/user-attachments/assets/1eb0762b-9e5d-415d-ae51-398eabfb9ef8" />
+<img width="701" height="689" alt="image" src="https://github.com/user-attachments/assets/db328b6d-f152-43f7-829e-ff0c9254fa8f" />
 
 
 ## Project Overview
@@ -32,16 +36,8 @@ This project is modular CNN pipeline for handwritten digit classification on MNI
 │   ├── model2.py           # Deeper CNN with BatchNorm, Dropout & augmentation
 │   ├── train.py            # Compilation, training loop, evaluation, model saving
 │   └── visualize.py        # All visualisation functions (plots, Grad-CAM, etc.)
-└── outputs/                # Generated after running main.py
-    ├── mnist_cnn.keras
-    ├── training_history.png
-    ├── sample_predictions.png
-    ├── confusion_matrix.png
-    ├── classification_report.png
-    ├── conv_filters.png
-    ├── feature_maps.png
-    ├── gradcam.png
-    └── tsne_embeddings.png
+└── outputs_[i]        
+
 ```
 
 ---
