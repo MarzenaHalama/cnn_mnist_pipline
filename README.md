@@ -33,16 +33,8 @@ This project is modular CNN pipeline for handwritten digit classification on MNI
 │   ├── model2.py           # Deeper CNN with BatchNorm, Dropout & augmentation
 │   ├── train.py            # Compilation, training loop, evaluation, model saving
 │   └── visualize.py        # All visualisation functions (plots, Grad-CAM, etc.)
-└── outputs/                # Generated after running main.py
-    ├── mnist_cnn.keras
-    ├── training_history.png
-    ├── sample_predictions.png
-    ├── confusion_matrix.png
-    ├── classification_report.png
-    ├── conv_filters.png
-    ├── feature_maps.png
-    ├── gradcam.png
-    └── tsne_embeddings.png
+└── outputs_[i]        
+
 ```
 
 ---
