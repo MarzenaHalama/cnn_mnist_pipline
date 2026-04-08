@@ -14,9 +14,20 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+import numpy as np
+
 from src.data import load_mnist
 from src.model import build_cnn
 from src.train import compile_model, evaluate, save_model, train
+from src.visualize import (
+    plot_classification_report,
+    plot_confusion_matrix,
+    plot_conv_filters,
+    plot_feature_maps,
+    plot_gradcam,
+    plot_sample_predictions,
+    plot_training_history,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -74,6 +85,18 @@ def main() -> None:
 
   
     save_model(model, out / "mnist_cnn.keras")
+
+    # --- Visualisations ---
+    print("\n=== Generating visualisations ===")
+    y_pred = np.argmax(model.predict(x_test, verbose=0), axis=1)
+
+    plot_training_history(history.history, save_path=str(out / "training_history.png"))
+    plot_sample_predictions(model, x_test, y_test, save_path=str(out / "sample_predictions.png"))
+    plot_confusion_matrix(y_test, y_pred, save_path=str(out / "confusion_matrix.png"))
+    plot_classification_report(y_test, y_pred, save_path=str(out / "classification_report.png"))
+    plot_conv_filters(model, layer_name="conv1", save_path=str(out / "conv_filters.png"))
+    plot_feature_maps(model, x_test[0], save_path=str(out / "feature_maps.png"))
+    plot_gradcam(model, x_test, y_test, save_path=str(out / "gradcam.png"))
 
     print(f"\nAll outputs saved to {out.resolve()}")
 

@@ -1,6 +1,6 @@
 # mnist-cnn-from-scratch
 
-This project is a production-style, modular CNN pipeline for handwritten digit classification on MNIST — built from scratch. It covers every step from data loading and model definition to training, evaluation, and model persistence.
+This project is modular CNN pipeline for handwritten digit classification on MNIST, built from scratch. It covers every step from data loading and model definition to training, evaluation, and model persistence.
 
 ---
 
@@ -22,7 +22,7 @@ This project is a production-style, modular CNN pipeline for handwritten digit c
 
 ```
 .
-├── main.py                 # End-to-end pipeline (train + evaluate + save)
+├── main.py                 # End-to-end pipeline (train + evaluate + visualise)
 ├── requirements.txt        # Python dependencies
 ├── README.md
 ├── src/
@@ -30,19 +30,30 @@ This project is a production-style, modular CNN pipeline for handwritten digit c
 │   ├── data.py             # MNIST loading & preprocessing
 │   ├── model.py            # CNN architecture definition
 │   ├── train.py            # Compilation, training loop, evaluation, model saving
-.
-
+│   └── visualize.py        # All visualisation functions (plots, Grad-CAM, etc.)
+└── outputs/                # Generated after running main.py
+    ├── mnist_cnn.keras
+    ├── training_history.png
+    ├── sample_predictions.png
+    ├── confusion_matrix.png
+    ├── classification_report.png
+    ├── conv_filters.png
+    ├── feature_maps.png
+    └── gradcam.png
 ```
 
 ---
 
 ## Features
 
-- **Modular source code** — each concern (data, model, training)
+- **Modular source code** — each concern (data, model, training, visualisation)
   lives in its own module with full docstrings and type annotations.
 - **CLI interface** — configure epochs, batch size, learning rate, and subset
   size from the command line.
 - **Callbacks** — EarlyStopping and ReduceLROnPlateau are wired in by default.
+- **Rich visualisations** — training curves, sample predictions, confusion
+  matrix, per-class metrics, convolutional filters, feature maps, and Grad-CAM
+  heatmaps are generated automatically and saved to `outputs/`.
 
 ---
 
@@ -50,7 +61,7 @@ This project is a production-style, modular CNN pipeline for handwritten digit c
 
 ### Prerequisites
 
-- **Python 3.10 – 3.12** (TensorFlow does not yet support 3.13+)
+- **Python 3.12** (TensorFlow does not yet support 3.13+)
 - pip
 
 ### Installation
@@ -58,7 +69,7 @@ This project is a production-style, modular CNN pipeline for handwritten digit c
 ```bash
 
 # Create a virtual environment (recommended)
-python -m venv .venv
+py -3.12 -m venv .venv
 .venv\Scripts\activate        # Windows
 # source .venv/bin/activate   # macOS / Linux
 
@@ -76,13 +87,27 @@ pip install -r requirements.txt
 python main.py
 ```
 
-The trained model is saved to `outputs/`.
+The trained model and all visualisation plots are saved to `outputs/`.
 
 ### Quick experiment with a smaller dataset
 
 ```bash
 python main.py --subset 5000 --epochs 10
 ```
+
+---
+
+## Generated Visualisations
+
+| File | Description |
+|------|-------------|
+| `training_history.png` | Loss and accuracy curves (train vs. validation) |
+| `sample_predictions.png` | Grid of test images with true/predicted labels |
+| `confusion_matrix.png` | Normalised confusion matrix |
+| `classification_report.png` | Per-class precision, recall, and F1-score bar chart |
+| `conv_filters.png` | Learned kernels of the first Conv2D layer |
+| `feature_maps.png` | Intermediate activations from conv1 and conv2 |
+| `gradcam.png` | Grad-CAM heatmap overlays on sample images |
 
 ---
 
