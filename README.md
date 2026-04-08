@@ -1,5 +1,8 @@
 # mnist-cnn-from-scratch
 
+<img width="753" height="183" alt="image" src="https://github.com/user-attachments/assets/1a27cada-fb02-473c-8cb1-66c376ffc077" />
+
+
 This project is modular CNN pipeline for handwritten digit classification on MNIST, built from scratch. It covers every step from data loading and model definition to training, evaluation, and model persistence.
 
 ---
