@@ -28,7 +28,8 @@ This project is modular CNN pipeline for handwritten digit classification on MNI
 ├── src/
 │   ├── __init__.py
 │   ├── data.py             # MNIST loading & preprocessing
-│   ├── model.py            # CNN architecture definition
+│   ├── model.py            # CNN architecture definition (baseline)
+│   ├── model2.py           # Deeper CNN with BatchNorm, Dropout & augmentation
 │   ├── train.py            # Compilation, training loop, evaluation, model saving
 │   └── visualize.py        # All visualisation functions (plots, Grad-CAM, etc.)
 └── outputs/                # Generated after running main.py
@@ -49,8 +50,10 @@ This project is modular CNN pipeline for handwritten digit classification on MNI
 
 - **Modular source code** — each concern (data, model, training, visualisation)
   lives in its own module with full docstrings and type annotations.
-- **CLI interface** — configure epochs, batch size, learning rate, and subset
-  size from the command line.
+- **Two model variants** — a lightweight baseline CNN and a deeper CNN (v2) with
+  BatchNorm, Dropout, and built-in data augmentation for small training sets.
+- **CLI interface** — configure epochs, batch size, learning rate, model variant,
+  and subset size from the command line.
 - **Callbacks** — EarlyStopping and ReduceLROnPlateau are wired in by default.
 - **Rich visualisations** — training curves, sample predictions, confusion
   matrix, per-class metrics, convolutional filters, feature maps, and Grad-CAM
@@ -90,10 +93,16 @@ python main.py
 
 The trained model and all visualisation plots are saved to `outputs/`.
 
-### Quick experiment with a smaller dataset
+### Model 1 — baseline CNN, 5 000 training samples
 
 ```bash
-python main.py --subset 5000 --epochs 10
+python main.py --model 1 --subset 5000 --epochs 20 --batch-size 64 --lr 0.001 --output-dir output_model_1
+```
+
+### Model 2 — deeper CNN, 500 training samples
+
+```bash
+python main.py --model 2 --subset 500 --epochs 20 --batch-size 64 --lr 0.001 --output-dir output_model_2
 ```
 
 ---
@@ -115,6 +124,8 @@ python main.py --subset 5000 --epochs 10
 
 ## Model Architecture
 
+### Model 1 — Baseline CNN (~93 k params)
+
 ```
 Input  (28, 28, 1)
   │
@@ -127,6 +138,30 @@ Input  (28, 28, 1)
   ├─ Flatten
   ├─ Dense   128, ReLU
   └─ Dense   10, Softmax   → class probabilities
+```
+
+### Model 2 — Deeper CNN with regularisation (~400 k params)
+
+```
+Input  (28, 28, 1)
+  │
+  ├─ RandomRotation + RandomZoom  (augmentation, train only)
+  │
+  ├─ Conv2D 32, 3×3, same → BN → ReLU
+  ├─ Conv2D 32, 3×3, same → BN → ReLU
+  ├─ MaxPool 2×2 → Dropout 0.25
+  │
+  ├─ Conv2D 64, 3×3, same → BN → ReLU
+  ├─ Conv2D 64, 3×3, same → BN → ReLU
+  ├─ MaxPool 2×2 → Dropout 0.25
+  │
+  ├─ Conv2D 128, 3×3, same → BN → ReLU
+  ├─ MaxPool 2×2 → Dropout 0.25
+  │
+  ├─ Flatten
+  ├─ Dense 256, ReLU → BN → Dropout 0.4
+  ├─ Dense 128, ReLU → Dropout 0.4
+  └─ Dense 10, Softmax   → class probabilities
 ```
 
 **Loss:** Sparse Categorical Cross-Entropy  

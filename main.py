@@ -18,6 +18,7 @@ import numpy as np
 
 from src.data import load_mnist
 from src.model import build_cnn
+from src.model2 import build_cnn_v2
 from src.train import compile_model, evaluate, save_model, train
 from src.visualize import (
     plot_classification_report,
@@ -46,6 +47,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--batch-size", type=int, default=64, help="Mini-batch size.")
     parser.add_argument("--lr", type=float, default=1e-3, help="Learning rate.")
     parser.add_argument(
+        "--model",
+        type=int,
+        choices=[1, 2],
+        default=1,
+        help="Model variant: 1 = baseline CNN, 2 = deeper CNN with augmentation (default: 1).",
+    )
+    parser.add_argument(
         "--output-dir",
         type=str,
         default="outputs",
@@ -57,6 +65,9 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     """Execute the full training and visualisation pipeline."""
     args = parse_args()
+    default_dir = f"output_model_{args.model}"
+    if args.output_dir == "outputs":
+        args.output_dir = default_dir
     out = Path(args.output_dir)
     out.mkdir(exist_ok=True)
 
@@ -66,18 +77,28 @@ def main() -> None:
     print(f"Train: {x_train.shape}  Test: {x_test.shape}")
 
     print("\n=== Building model ===")
-    model = build_cnn()
+    if args.model == 2:
+        model = build_cnn_v2()
+    else:
+        model = build_cnn()
     model.summary()
 
 
     print("\n=== Training ===")
     compile_model(model, learning_rate=args.lr)
+
+    # Small subsets need longer patience and less validation data
+    patience = 15 if args.model == 2 else 5
+    val_split = 0.1
+
     history = train(
         model,
         x_train,
         y_train,
         epochs=args.epochs,
         batch_size=args.batch_size,
+        validation_split=val_split,
+        early_stopping_patience=patience,
     )
 
     print("\n=== Evaluation ===")
@@ -85,7 +106,8 @@ def main() -> None:
     print(f"Test loss: {metrics['loss']:.4f}  Test accuracy: {metrics['accuracy']:.4f}")
 
   
-    save_model(model, out / "mnist_cnn.keras")
+    model_filename = "mnist_cnn_v2.keras" if args.model == 2 else "mnist_cnn.keras"
+    save_model(model, out / model_filename)
 
     # --- Visualisations ---
     print("\n=== Generating visualisations ===")

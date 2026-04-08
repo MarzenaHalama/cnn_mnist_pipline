@@ -164,6 +164,7 @@ def plot_classification_report(
     """
     report = classification_report(
         y_true, y_pred, target_names=CLASS_NAMES, output_dict=True,
+        zero_division=0,
     )
 
     classes = CLASS_NAMES
