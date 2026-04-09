@@ -19,7 +19,7 @@ import numpy as np
 from src.data import load_mnist
 from src.model import build_cnn
 from src.model2 import build_cnn_v2
-from src.train import compile_model, evaluate, save_model, train
+from src.train import compile_model, evaluate, save_model, save_model_pkl, train
 from src.visualize import (
     plot_classification_report,
     plot_confusion_matrix,
@@ -108,6 +108,9 @@ def main() -> None:
   
     model_filename = "mnist_cnn_v2.keras" if args.model == 2 else "mnist_cnn.keras"
     save_model(model, out / model_filename)
+
+    pkl_filename = "mnist_cnn_v2.pkl" if args.model == 2 else "mnist_cnn.pkl"
+    save_model_pkl(model, out / pkl_filename)
 
     # --- Visualisations ---
     print("\n=== Generating visualisations ===")

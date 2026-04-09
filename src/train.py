@@ -103,3 +103,18 @@ def save_model(model: Model, path: str | Path = "saved_model") -> None:
     """
     model.save(path)
     print(f"Model saved to {path}")
+
+
+def save_model_pkl(model: Model, path: str | Path = "model.pkl") -> None:
+    """Persist the model to disk in pickle format.
+
+    Parameters:
+    model,
+    path - destination ``.pkl`` file path.
+    """
+    import pickle
+
+    path = Path(path)
+    with open(path, "wb") as f:
+        pickle.dump(model, f)
+    print(f"Model saved to {path} (pickle)")
