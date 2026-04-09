@@ -6,6 +6,7 @@
 This project is modular CNN pipeline for handwritten digit classification on MNIST, built from scratch. It covers every step from data loading and model definition to training, evaluation, and model persistence.
 
 ---
+## Model Architecture
 
 <img width="701" height="372" alt="image" src="https://github.com/user-attachments/assets/1eb0762b-9e5d-415d-ae51-398eabfb9ef8" />
 <img width="701" height="689" alt="image" src="https://github.com/user-attachments/assets/db328b6d-f152-43f7-829e-ff0c9254fa8f" />
@@ -27,6 +28,8 @@ This project is modular CNN pipeline for handwritten digit classification on MNI
 ```
 .
 ├── main.py                 # End-to-end pipeline (train + evaluate + visualise)
+├── export_model.py         # Export a saved .keras model to .pkl format
+├── comparison.ipynb        # Notebook comparing model variants
 ├── requirements.txt        # Python dependencies
 ├── README.md
 ├── src/
@@ -34,9 +37,11 @@ This project is modular CNN pipeline for handwritten digit classification on MNI
 │   ├── data.py             # MNIST loading & preprocessing
 │   ├── model.py            # CNN architecture definition (baseline)
 │   ├── model2.py           # Deeper CNN with BatchNorm, Dropout & augmentation
-│   ├── train.py            # Compilation, training loop, evaluation, model saving
+│   ├── train.py            # Compilation, training loop, evaluation, model saving (.keras & .pkl)
 │   └── visualize.py        # All visualisation functions (plots, Grad-CAM, etc.)
-└── outputs_[i]        
+├── output_model_1/         # Saved model & plots for baseline CNN
+├── output_model_2/         # Saved model & plots for deeper CNN v2
+└── outputs/                # Default output directory
 
 ```
 
@@ -101,67 +106,24 @@ python main.py --model 1 --subset 5000 --epochs 20 --batch-size 64 --lr 0.001 --
 python main.py --model 2 --subset 500 --epochs 20 --batch-size 64 --lr 0.001 --output-dir output_model_2
 ```
 
----
+### Export model to pickle
 
-## Generated Visualisations
-
-| File | Description |
-|------|-------------|
-| `training_history.png` | Loss and accuracy curves (train vs. validation) |
-| `sample_predictions.png` | Grid of test images with true/predicted labels |
-| `confusion_matrix.png` | Normalised confusion matrix |
-| `classification_report.png` | Per-class precision, recall, and F1-score bar chart |
-| `conv_filters.png` | Learned kernels of the first Conv2D layer |
-| `feature_maps.png` | Intermediate activations from conv1 and conv2 |
-| `gradcam.png` | Grad-CAM heatmap overlays on sample images |
-| `tsne_embeddings.png` | 2-D t-SNE projection of learned feature embeddings (dense1) |
+```bash
+python export_model.py --input output_model_1/mnist_cnn.keras --output output_model_1/mnist_cnn.pkl
+```
 
 ---
 
-## Model Architecture
+## Training Parameters
 
-### Model 1 — Baseline CNN (~93 k params)
-
-```
-Input  (28, 28, 1)
-  │
-  ├─ Conv2D  32 filters, 3×3, ReLU
-  ├─ MaxPool 2×2
-  │
-  ├─ Conv2D  64 filters, 3×3, ReLU
-  ├─ MaxPool 2×2
-  │
-  ├─ Flatten
-  ├─ Dense   128, ReLU
-  └─ Dense   10, Softmax   → class probabilities
-```
-
-### Model 2 — Deeper CNN with regularisation (~400 k params)
-
-```
-Input  (28, 28, 1)
-  │
-  ├─ RandomRotation + RandomZoom  (augmentation, train only)
-  │
-  ├─ Conv2D 32, 3×3, same → BN → ReLU
-  ├─ Conv2D 32, 3×3, same → BN → ReLU
-  ├─ MaxPool 2×2 → Dropout 0.25
-  │
-  ├─ Conv2D 64, 3×3, same → BN → ReLU
-  ├─ Conv2D 64, 3×3, same → BN → ReLU
-  ├─ MaxPool 2×2 → Dropout 0.25
-  │
-  ├─ Conv2D 128, 3×3, same → BN → ReLU
-  ├─ MaxPool 2×2 → Dropout 0.25
-  │
-  ├─ Flatten
-  ├─ Dense 256, ReLU → BN → Dropout 0.4
-  ├─ Dense 128, ReLU → Dropout 0.4
-  └─ Dense 10, Softmax   → class probabilities
-```
-
-**Loss:** Sparse Categorical Cross-Entropy  
-**Optimiser:** Adam (default lr = 0.001)  
-**Metrics:** Accuracy
+| Parameter | Value |
+|-----------|-------|
+| **Loss function** | Sparse Categorical Cross-Entropy |
+| **Optimiser** | Adam (default lr = 0.001) |
+| **Metrics** | Accuracy |
+| **Callbacks** | EarlyStopping (patience 5/15), ReduceLROnPlateau (factor 0.5, patience 3) |
+| **Validation split** | 10 % of training data |
+| **Default epochs** | 20 |
+| **Default batch size** | 64 |
 
 
